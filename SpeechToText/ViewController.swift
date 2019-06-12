@@ -8,6 +8,11 @@
 
 import UIKit
 
+enum Commands: String, CaseIterable {
+    case Listen = "listen"
+    case Start  = "start"
+}
+
 class ViewController: UIViewController, SpeechToTextEngineDelegate {
     
     @IBOutlet weak var textView: UITextView!
@@ -27,17 +32,32 @@ class ViewController: UIViewController, SpeechToTextEngineDelegate {
     // MARK: - STTEngine Delegates
     
     // This string data streams in as recorded voice is processed by the SpeechToTextEngine.
-    func providedResult(value s: String) {
+    func providedResult(value s: String)
+    {
         textView.text = s
-        let score = s.score(word: "123")
-        let score2 = s.score(word: "123", fuzziness: 0.5) // between 0-1, defaults to nil
+        
+        //let score = s.score(word: "123")
+        //let score2 = s.score(word: "123", fuzziness: 0.5) // between 0-1, defaults to nil
         
         //Testing 123
-        print(score, score2) //0.5515151515151515 0.5515151515151515
+        //print(score, score2) //0.5515151515151515 0.5515151515151515
         
         //Listen
-        let score3 = s.score(word: "Listen", fuzziness: 0.5)
-        print(score3) //1.0
+        //let score3 = s.score(word: "Listen", fuzziness: 0.5)
+        //print(score3) //1.0
+        
+        // Loop through commands looking for a good match.
+        let lowercasedString = s.lowercased()
+        for command in Commands.allCases {
+            let score4 = lowercasedString.score(word: command.rawValue)
+            if score4 > 0.65 {
+                if command == .Listen {
+                    print("We found listen.")
+                } else if command == .Start {
+                    print("We found start.")
+                }
+            }
+        }
     }
     
     func isListening(value: Bool) {

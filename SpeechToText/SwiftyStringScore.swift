@@ -4,6 +4,7 @@
 //
 //  Copyright (c) 2016-present YICHI ZHANG
 //  https://github.com/yichizhang
+//  https://github.com/yichizhang/SwiftyStringScore <- Where I found this.
 //  zhang-yi-chi@hotmail.com
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a
