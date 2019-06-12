@@ -11,7 +11,8 @@ import Speech
 
 protocol SpeechToTextEngineDelegate {
     func providedResult(value s: String)
-    func isListening(value b: Bool)
+    func isListening(value: Bool)
+    func isAllowedToRecord(value: Bool)
 }
 
 class SpeechToTextEngine: NSObject, SFSpeechRecognizerDelegate
@@ -21,7 +22,7 @@ class SpeechToTextEngine: NSObject, SFSpeechRecognizerDelegate
     private var recognitionTask: SFSpeechRecognitionTask?
     private let audioEngine = AVAudioEngine()
     private var allowedToRecord = true
-    var delegate:SpeechToTextEngineDelegate?
+    var delegate: SpeechToTextEngineDelegate?
     
     override init()
     {
@@ -45,11 +46,16 @@ class SpeechToTextEngine: NSObject, SFSpeechRecognizerDelegate
                 print("unknown.")
                 self.allowedToRecord = false
             }
+            self.delegate?.isAllowedToRecord(value: self.allowedToRecord)
         }
     }
     
     public func requestRecording()
     {
+        if allowedToRecord == false {
+            self.delegate?.isAllowedToRecord(value: false)
+            return
+        }
         if audioEngine.isRunning {
             audioEngine.stop()
             recognitionRequest?.endAudio()
