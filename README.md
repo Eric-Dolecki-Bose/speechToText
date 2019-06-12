@@ -18,6 +18,8 @@ I built in some fuzzy string matching (which uses a 0 - 1 scoring system). Based
 
 ----
 
+### Simple Use
+
 ```swift
 class ViewController: UIViewController, SpeechToTextEngineDelegate 
 {
