@@ -23,6 +23,7 @@ class SpeechToTextEngine: NSObject, SFSpeechRecognizerDelegate
     private let audioEngine = AVAudioEngine()
     private var allowedToRecord = true
     var delegate: SpeechToTextEngineDelegate?
+    var speechRecognitionTimeoutTimer: Timer?
     
     override init()
     {
@@ -67,6 +68,9 @@ class SpeechToTextEngine: NSObject, SFSpeechRecognizerDelegate
     
     // We can use this if we determine a command match before the user is done speaking. Premptive.
     public func requestStopRecording() {
+        if self.speechRecognitionTimeoutTimer != nil {
+            self.speechRecognitionTimeoutTimer!.invalidate()
+        }
         if audioEngine.isRunning {
             audioEngine.stop()
             recognitionRequest?.endAudio()
@@ -111,6 +115,14 @@ class SpeechToTextEngine: NSObject, SFSpeechRecognizerDelegate
                 let resultString = result?.bestTranscription.formattedString
                 self.delegate?.providedResult(value: resultString ?? "")
                 isFinal = (result?.isFinal)!
+                
+                // Detect end of speech (2 seconds).
+                if self.speechRecognitionTimeoutTimer != nil {
+                    self.speechRecognitionTimeoutTimer!.invalidate()
+                }
+                self.speechRecognitionTimeoutTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false, block: { (timer) in
+                    self.endOfSpeechDetected()
+                })
             }
             
             // We're done for now.
@@ -135,6 +147,11 @@ class SpeechToTextEngine: NSObject, SFSpeechRecognizerDelegate
             print("audioEngine couldn't start because of an error.")
         }
         self.delegate?.isListening(value: true)
+    }
+    
+    func endOfSpeechDetected() {
+        print("End of speech detected after 2 seconds.")
+        self.requestStopRecording()
     }
     
     func speechRecognizer(_ speechRecognizer: SFSpeechRecognizer, availabilityDidChange available: Bool) {
