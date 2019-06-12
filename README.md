@@ -5,4 +5,9 @@ A template Swift project that uses a button to show speech to text transcription
 
 This can be used as the basis for Bose AR hardware that contains a microphone. The project uses a button, but a double-tap or another gesture could kick off microphone recording. Just a little helper project. 
 
+### Note
+You need to have privacy settings set in info.plist
+* Privacy - Microphone Usage Description
+* Privacy - Speech Recognition Usage Description
+
 You can use a fuzzy string matching algorithm to determine intent/input. Something like fuse-swift [fuse-swift](https://github.com/krisk/fuse-swift).
