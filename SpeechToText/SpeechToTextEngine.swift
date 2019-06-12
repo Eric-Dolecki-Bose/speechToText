@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  SpeechToTextEngine.swift
 //  SpeechToText
 //
 //  Created by Eric Dolecki on 6/12/19.
@@ -9,80 +9,57 @@
 import UIKit
 import Speech
 
-class ViewController: UIViewController, SFSpeechRecognizerDelegate, SpeechToTextEngineDelegate {
-    
-    // MARK: - STTEngine Delegates
-    
-    func providedResult(value s: String) {
-        print("Result: \(s)")
-    }
-    
-    func isListening(value b: Bool) {
-        print("is sttEngine listening: \(b)")
-    }
+protocol SpeechToTextEngineDelegate {
+    func providedResult(value s: String)
+    func isListening(value b: Bool)
+}
 
-    // MARK: -
-    
-    @IBOutlet weak var textView: UITextView!
-    @IBOutlet weak var microphoneButton: UIButton!
-    
+class SpeechToTextEngine: NSObject, SFSpeechRecognizerDelegate
+{
     private var speechRecognizer = SFSpeechRecognizer(locale: Locale.init(identifier: "en-US"))
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     private var recognitionTask: SFSpeechRecognitionTask?
     private let audioEngine = AVAudioEngine()
+    private var allowedToRecord = true
+    var delegate:SpeechToTextEngineDelegate?
     
-    // Testing this to abstract a lot of functionality.
-    var sttEngine = SpeechToTextEngine()
-    
-    override func viewDidLoad()
+    override init()
     {
-        super.viewDidLoad()
-        
-        // Testing.
-        sttEngine.delegate = self
-        //sttEngine.requestRecording() // This would kick off recording. If using this, cannot use the speech code in this ViewController.
-        
+        super.init()
         speechRecognizer?.delegate = self
-        SFSpeechRecognizer.requestAuthorization{ (authStatus) in
-            
-            var isButtonEnabled = false
-            
+        SFSpeechRecognizer.requestAuthorization { (authStatus) in
             switch authStatus {
             case .authorized:
-                isButtonEnabled = true
+                print("authorized.")
+                self.allowedToRecord = true
             case .denied:
-                isButtonEnabled = false
-            case .restricted:
-                isButtonEnabled = false
+                print("deined access.")
+                self.allowedToRecord = false
             case .notDetermined:
-                isButtonEnabled = false
-            
-            // Possible future state which is undefined at the moment.
+                print("not determined.")
+                self.allowedToRecord = false
+            case .restricted:
+                print("restricted.")
+                self.allowedToRecord = false
             @unknown default:
-                isButtonEnabled = false
-            }
-            
-            // Needs to happen on the UI thread.
-            OperationQueue.main.addOperation() {
-                self.microphoneButton.isEnabled = isButtonEnabled
+                print("unknown.")
+                self.allowedToRecord = false
             }
         }
     }
     
-    @IBAction func micButtonTapped(_ sender: Any)
+    public func requestRecording()
     {
         if audioEngine.isRunning {
             audioEngine.stop()
             recognitionRequest?.endAudio()
-            microphoneButton.isEnabled = false
-            microphoneButton.setTitle("Start Recording", for: .normal)
+            self.delegate?.isListening(value: false)
         } else {
             startRecording()
-            microphoneButton.setTitle("Stop Recording", for: .normal)
         }
     }
     
-    func startRecording()
+    private func startRecording()
     {
         if recognitionTask != nil {
             recognitionTask?.cancel()
@@ -116,7 +93,8 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate, SpeechToText
             
             if result != nil {
                 
-                self.textView.text = result?.bestTranscription.formattedString
+                let resultString = result?.bestTranscription.formattedString
+                self.delegate?.providedResult(value: resultString ?? "")
                 isFinal = (result?.isFinal)!
             }
             
@@ -127,7 +105,7 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate, SpeechToText
                 inputNode.removeTap(onBus: 0)
                 self.recognitionRequest = nil
                 self.recognitionTask = nil
-                self.microphoneButton.isEnabled = true
+                self.delegate?.isListening(value: false)
             }
         })
         
@@ -144,16 +122,14 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate, SpeechToText
             print("audioEngine couldn't start because of an error.")
         }
         
-        textView.text = "Say something, I'm listening!"
-        
+        self.delegate?.isListening(value: true)
     }
     
     func speechRecognizer(_ speechRecognizer: SFSpeechRecognizer, availabilityDidChange available: Bool) {
         if available {
-            microphoneButton.isEnabled = true
+            //Can record.
         } else {
-            microphoneButton.isEnabled = false
+            //Cannot record.
         }
     }
 }
-

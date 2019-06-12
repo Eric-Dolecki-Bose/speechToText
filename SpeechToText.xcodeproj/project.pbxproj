@@ -12,6 +12,7 @@
 		5F927C3022B1242400B08F40 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5F927C2E22B1242400B08F40 /* Main.storyboard */; };
 		5F927C3222B1242600B08F40 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5F927C3122B1242600B08F40 /* Assets.xcassets */; };
 		5F927C3522B1242600B08F40 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5F927C3322B1242600B08F40 /* LaunchScreen.storyboard */; };
+		5F927C3D22B12EAA00B08F40 /* SpeechToTextEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F927C3C22B12EAA00B08F40 /* SpeechToTextEngine.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		5F927C3122B1242600B08F40 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5F927C3422B1242600B08F40 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5F927C3622B1242600B08F40 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5F927C3C22B12EAA00B08F40 /* SpeechToTextEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechToTextEngine.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +58,7 @@
 			children = (
 				5F927C2A22B1242400B08F40 /* AppDelegate.swift */,
 				5F927C2C22B1242400B08F40 /* ViewController.swift */,
+				5F927C3C22B12EAA00B08F40 /* SpeechToTextEngine.swift */,
 				5F927C2E22B1242400B08F40 /* Main.storyboard */,
 				5F927C3122B1242600B08F40 /* Assets.xcassets */,
 				5F927C3322B1242600B08F40 /* LaunchScreen.storyboard */,
@@ -137,6 +140,7 @@
 			files = (
 				5F927C2D22B1242400B08F40 /* ViewController.swift in Sources */,
 				5F927C2B22B1242400B08F40 /* AppDelegate.swift in Sources */,
+				5F927C3D22B12EAA00B08F40 /* SpeechToTextEngine.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
