@@ -65,6 +65,15 @@ class SpeechToTextEngine: NSObject, SFSpeechRecognizerDelegate
         }
     }
     
+    // We can use this if we determine a command match before the user is done speaking. Premptive.
+    public func requestStopRecording() {
+        if audioEngine.isRunning {
+            audioEngine.stop()
+            recognitionRequest?.endAudio()
+            self.delegate?.isListening(value: false)
+        }
+    }
+    
     private func startRecording()
     {
         if recognitionTask != nil {
