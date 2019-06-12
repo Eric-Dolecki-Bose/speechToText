@@ -119,23 +119,24 @@ class SpeechToTextEngine: NSObject, SFSpeechRecognizerDelegate
         inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { (buffer, when) in
             self.recognitionRequest?.append(buffer)
         }
-        
         audioEngine.prepare()
-        
         do {
             try audioEngine.start()
         } catch {
             print("audioEngine couldn't start because of an error.")
         }
-        
         self.delegate?.isListening(value: true)
     }
     
     func speechRecognizer(_ speechRecognizer: SFSpeechRecognizer, availabilityDidChange available: Bool) {
         if available {
-            //Can record.
+            // We have access to record.
+            self.allowedToRecord = true
+            self.delegate?.isAllowedToRecord(value: true)
         } else {
-            //Cannot record.
+            // We do not have access to record.
+            self.allowedToRecord = false
+            self.delegate?.isAllowedToRecord(value: false)
         }
     }
 }
