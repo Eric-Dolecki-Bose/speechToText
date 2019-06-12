@@ -29,6 +29,15 @@ class ViewController: UIViewController, SpeechToTextEngineDelegate {
     // This string data streams in as recorded voice is processed by the SpeechToTextEngine.
     func providedResult(value s: String) {
         textView.text = s
+        let score = s.score(word: "123")
+        let score2 = s.score(word: "123", fuzziness: 0.5) // between 0-1, defaults to nil
+        
+        //Testing 123
+        print(score, score2) //0.5515151515151515 0.5515151515151515
+        
+        //Listen
+        let score3 = s.score(word: "Listen", fuzziness: 0.5)
+        print(score3) //1.0
     }
     
     func isListening(value: Bool) {
